@@ -85,20 +85,16 @@
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.text())
-                .then(data => {
-                    try {
-                        const result = eval('(' + data + ')');
-                        if (result.valid) {
-                            showResult(`✓ Valid Aadhar Card! Number: ${result.number}`, true);
-                        } else {
-                            showResult('✗ Invalid Aadhar Card or could not extract number', false);
-                        }
-                    } catch (e) {
-                        showResult('Error processing response', false);
+                .then(response => response.json())
+                .then(result => {
+                    if (result.valid) {
+                        showResult(`✓ Valid Aadhar Card! Number: ${result.number}`, true);
+                    } else {
+                        showResult('✗ Invalid Aadhar Card or could not extract number', false);
                     }
                 })
                 .catch(error => {
+                    console.error('Error:', error);
                     showResult('Error: ' + error.message, false);
                 });
         }
@@ -120,20 +116,16 @@
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.text())
-                .then(data => {
-                    try {
-                        const result = eval('(' + data + ')');
-                        if (result.valid) {
-                            showResult(`✓ Valid Aadhar Number! Formatted: ${result.number}`, true);
-                        } else {
-                            showResult('✗ Invalid Aadhar Number format', false);
-                        }
-                    } catch (e) {
-                        showResult('Error processing response', false);
+                .then(response => response.json())
+                .then(result => {
+                    if (result.valid) {
+                        showResult(`✓ Valid Aadhar Number! Formatted: ${result.number}`, true);
+                    } else {
+                        showResult('✗ Invalid Aadhar Number format', false);
                     }
                 })
                 .catch(error => {
+                    console.error('Error:', error);
                     showResult('Error: ' + error.message, false);
                 });
         }

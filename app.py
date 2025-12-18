@@ -1,12 +1,13 @@
 import re
 import sys
 import os
+import json
 from io import BytesIO
 
 # Add BackEnd directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'BackEnd'))
 
-from flask import Flask, render_template, Response, request, send_file
+from flask import Flask, render_template, Response, request, send_file, jsonify
 from werkzeug.utils import secure_filename
 from PIL import Image
 
@@ -50,20 +51,16 @@ def aadhar():
             if request.files['file'].filename != "":
                 file_bytes = request.files['file'].read()
                 a, num = aadharVerification.aadhar_auth_img(file_bytes)
-                if a:
-                    return Response(str({'number': str(num), 'valid': True}), status=200, mimetype='application/json')
-                else:
-                    return Response(str({'number': '', 'valid': False}), status=200, mimetype='application/json')
+                return jsonify({'number': str(num), 'valid': bool(a)})
         else:
             number = request.form.get("number", "")
             a, num = aadharVerification.aadhar_auth_number(number)
-            if a:
-                return Response(str({'number': str(num), 'valid': True}), status=200, mimetype='application/json')
-            else:
-                return Response(str({'number': '', 'valid': False}), status=200, mimetype='application/json')
+            return jsonify({'number': str(num), 'valid': bool(a)})
     except Exception as e:
         print(f"Error in aadhar verification: {e}")
-        return Response(str({'number': '', 'valid': False, 'error': str(e)}), status=403, mimetype='application/json')
+        import traceback
+        traceback.print_exc()
+        return jsonify({'number': '', 'valid': False, 'error': str(e)}), 403
 
 @app.route("/panVerification", methods=['POST', 'GET'])
 def pan():
@@ -72,20 +69,16 @@ def pan():
             if request.files['file'].filename != "":
                 file_bytes = request.files['file'].read()
                 a, num = panVerification.pan_auth_img(file_bytes)
-                if a:
-                    return Response(str({'number': str(num), 'valid': True}), status=200, mimetype='application/json')
-                else:
-                    return Response(str({'number': '', 'valid': False}), status=200, mimetype='application/json')
+                return jsonify({'number': str(num), 'valid': bool(a)})
         else:
             number = request.form.get("number", "")
             a, num = panVerification.pan_auth_number(number)
-            if a:
-                return Response(str({'number': str(num), 'valid': True}), status=200, mimetype='application/json')
-            else:
-                return Response(str({'number': '', 'valid': False}), status=200, mimetype='application/json')
+            return jsonify({'number': str(num), 'valid': bool(a)})
     except Exception as e:
         print(f"Error in PAN verification: {e}")
-        return Response(str({'number': '', 'isvalid': False, 'error': str(e)}), status=400, mimetype='application/json')
+        import traceback
+        traceback.print_exc()
+        return jsonify({'number': '', 'valid': False, 'error': str(e)}), 400
 
 @app.route("/panResizeMAR", methods=["POST", "GET"])
 def panresizeMAR():
