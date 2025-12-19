@@ -13,52 +13,83 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
         .header {
-            background: #8B0000;
+            background: linear-gradient(135deg, #8B0000 0%, #A52A2A 100%);
             color: white;
-            padding: 30px 40px;
-            border-bottom: 4px solid #660000;
+            padding: 40px;
+            position: relative;
         }
 
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .emblem {
-            font-size: 40px;
+        .header-content {
+            max-width: 800px;
         }
 
         .header h1 {
-            font-size: 1.8em;
-            margin-bottom: 5px;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .header p {
-            opacity: 0.9;
+            opacity: 0.95;
+            font-size: 15px;
+        }
+
+        .nav-bar {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            color: #666;
             font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #8B0000;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-home {
+            background: #8B0000;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:hover {
+            background: #A52A2A;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(139, 0, 0, 0.3);
         }
 
         .content {
@@ -68,7 +99,7 @@
         .info-banner {
             background: #fff3cd;
             border-left: 4px solid #ff9800;
-            padding: 15px 20px;
+            padding: 16px 20px;
             margin-bottom: 30px;
             border-radius: 4px;
             color: #856404;
@@ -76,25 +107,32 @@
 
         .info-banner strong {
             color: #8B0000;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-banner p {
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .section-title {
             font-size: 18px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 2px solid #e0e0e0;
         }
 
         .upload-area {
             border: 2px dashed #8B0000;
             border-radius: 8px;
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
@@ -103,26 +141,33 @@
 
         .upload-area:hover {
             background: #ffe8e8;
-            border-color: #660000;
+            border-color: #A52A2A;
         }
 
         .upload-area input[type="file"] {
             display: none;
         }
 
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #8B0000;
+        .upload-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 13px;
+            color: #666;
         }
 
         .preview-image {
             max-width: 100%;
-            max-height: 300px;
-            margin: 20px 0;
+            max-height: 350px;
+            margin: 25px 0;
             border-radius: 8px;
             border: 1px solid #e0e0e0;
             display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -139,11 +184,11 @@
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px 16px;
             border: 1px solid #d0d0d0;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
             text-transform: uppercase;
         }
 
@@ -154,10 +199,10 @@
         }
 
         .btn {
-            padding: 14px 30px;
+            padding: 14px 32px;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -170,7 +215,9 @@
         }
 
         .btn-primary:hover {
-            background: #660000;
+            background: #A52A2A;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
         }
 
         .btn-primary:active {
@@ -179,9 +226,11 @@
 
         .divider {
             text-align: center;
-            margin: 30px 0;
+            margin: 35px 0;
             color: #999;
             position: relative;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .divider::before,
@@ -203,9 +252,9 @@
         }
 
         .result {
-            margin-top: 20px;
+            margin-top: 25px;
             padding: 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             display: none;
         }
 
@@ -229,77 +278,73 @@
 
         .result-title {
             font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 17px;
+            margin-bottom: 12px;
         }
 
         .result-details {
             margin-top: 15px;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 16px;
             border-radius: 4px;
         }
 
         .result-details div {
-            margin: 8px 0;
+            margin: 10px 0;
             font-size: 14px;
         }
 
         .confidence-bar {
             width: 100%;
-            height: 8px;
+            height: 10px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            border-radius: 5px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .confidence-fill {
             height: 100%;
-            background: #28a745;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
             transition: width 0.5s;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: #8B0000;
-            text-decoration: none;
-            font-weight: 500;
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #856404;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        .note strong {
+            color: #664d03;
+        }
+
+        .holder-type {
+            display: inline-block;
+            background: #e8f4fd;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #0066cc;
+            font-weight: 600;
+            margin-top: 5px;
         }
 
         .footer {
-            background: #f5f7fa;
-            padding: 20px 40px;
+            background: #f8f9fa;
+            padding: 25px 40px;
             text-align: center;
             color: #666;
             font-size: 13px;
             border-top: 1px solid #e0e0e0;
         }
 
-        .note {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 12px 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #856404;
-        }
-
-        .holder-type {
-            display: inline-block;
-            background: #e8f4fd;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 13px;
-            color: #0066cc;
-            font-weight: 600;
-            margin-top: 5px;
+        .footer p {
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -307,39 +352,44 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-top">
-                <div class="logo">💳 IT Department</div>
-                <div class="emblem">🇮🇳</div>
+            <div class="header-content">
+                <h1>PAN Card Format Validation</h1>
+                <p>Income Tax Department, Government of India</p>
             </div>
-            <h1>PAN Card Format Validation</h1>
-            <p>Income Tax Department, Government of India</p>
+        </div>
+
+        <div class="nav-bar">
+            <div class="breadcrumb">
+                <a href="/">Home</a> / PAN Validation
+            </div>
+            <a href="/" class="btn-home">Back to Home</a>
         </div>
 
         <div class="content">
             <div class="info-banner">
-                <strong>⚠️ Important:</strong> This system performs <strong>format validation only</strong>. It does NOT
-                verify PAN with the Income Tax Department database. Full verification requires name, DOB, and OTP
-                authentication on the official IT portal.
+                <strong>Important Notice</strong>
+                <p>This system performs format validation only. It does NOT verify PAN with the Income Tax Department
+                    database. Full verification requires name, date of birth, and OTP authentication on the official IT
+                    portal.</p>
             </div>
 
             <!-- Image Upload Section -->
             <div class="section">
-                <div class="section-title">📸 Validate by Image Upload</div>
+                <div class="section-title">Validate by Image Upload</div>
                 <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">📤</div>
-                    <p style="font-weight: 600; margin-bottom: 5px;">Click to upload PAN card image</p>
-                    <p style="font-size: 14px; color: #666;">Supports: JPG, PNG, JPEG (Max 16MB)</p>
+                    <div class="upload-text">Click to upload PAN card image</div>
+                    <div class="upload-hint">Supports: JPG, PNG, JPEG (Maximum 16MB)</div>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
                 </div>
                 <img id="previewImage" class="preview-image" alt="Preview">
 
-                <button class="btn btn-primary" onclick="verifyPAN()" style="margin-top: 15px;">
-                    🔍 Validate PAN Card
+                <button class="btn btn-primary" onclick="verifyPAN()" style="margin-top: 20px;">
+                    Validate PAN Card
                 </button>
 
                 <div class="note">
                     <strong>Note:</strong> Image validation requires Google Cloud Vision API credentials to be
-                    configured.
+                    configured. Ensure credentials are properly set up before using this feature.
                 </div>
             </div>
 
@@ -347,25 +397,22 @@
 
             <!-- Number Input Section -->
             <div class="section">
-                <div class="section-title">🔢 Validate by PAN Number</div>
+                <div class="section-title">Validate by PAN Number</div>
                 <div class="form-group">
                     <label for="panNumber">Enter 10-character PAN Number</label>
                     <input type="text" id="panNumber" placeholder="ABCDE1234F" maxlength="10">
                 </div>
                 <button class="btn btn-primary" onclick="verifyPANNumber()">
-                    ✓ Validate Format
+                    Validate Format
                 </button>
             </div>
 
             <div id="result" class="result"></div>
-
-            <a href="/" class="back-link">← Back to Home</a>
         </div>
 
         <div class="footer">
-            <p>© 2024 PAN Validation System | For authorized use only</p>
-            <p style="margin-top: 5px; font-size: 12px;">This is an unofficial format validation tool - not connected to
-                IT Department database</p>
+            <p>&copy; 2024 PAN Validation System | For authorized use only</p>
+            <p>This is an unofficial format validation tool - not connected to IT Department database</p>
         </div>
     </div>
 
@@ -404,7 +451,7 @@
                 .then(result => {
                     if (result.valid) {
                         const details = `
-                        <div class="result-title">✓ Valid PAN Format!</div>
+                        <div class="result-title">Valid PAN Format</div>
                         <div class="result-details">
                             <div><strong>PAN Number:</strong> ${result.number}</div>
                             <div><strong>Holder Type:</strong> <span class="holder-type">${result.holder_type}</span></div>
@@ -412,12 +459,12 @@
                             <div class="confidence-bar">
                                 <div class="confidence-fill" style="width: ${result.confidence}%"></div>
                             </div>
-                            <div style="margin-top: 10px;"><em>${result.message}</em></div>
+                            <div style="margin-top: 12px;"><em>${result.message}</em></div>
                         </div>
                     `;
                         showResult(details, 'success', true);
                     } else {
-                        showResult(`✗ ${result.message || 'Invalid or unreadable PAN card'}`, 'error');
+                        showResult(`${result.message || 'Invalid or unreadable PAN card'}`, 'error');
                     }
                 })
                 .catch(error => {
@@ -446,7 +493,7 @@
                 .then(result => {
                     if (result.valid) {
                         const details = `
-                        <div class="result-title">✓ Valid PAN Format!</div>
+                        <div class="result-title">Valid PAN Format</div>
                         <div class="result-details">
                             <div><strong>PAN Number:</strong> ${result.number}</div>
                             <div><strong>Holder Type:</strong> <span class="holder-type">${result.holder_type}</span></div>
@@ -454,12 +501,12 @@
                             <div class="confidence-bar">
                                 <div class="confidence-fill" style="width: ${result.confidence}%"></div>
                             </div>
-                            <div style="margin-top: 10px;"><em>${result.message}</em></div>
+                            <div style="margin-top: 12px;"><em>${result.message}</em></div>
                         </div>
                     `;
                         showResult(details, 'success', true);
                     } else {
-                        showResult(`✗ ${result.message || 'Invalid PAN format'}`, 'error');
+                        showResult(`${result.message || 'Invalid PAN format'}`, 'error');
                     }
                 })
                 .catch(error => {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aadhar Card Verification - Government of India</title>
+    <title>Aadhar Card Verification - UIDAI</title>
     <style>
         * {
             margin: 0;
@@ -13,52 +13,83 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
         .header {
-            background: #0066cc;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
-            padding: 30px 40px;
-            border-bottom: 4px solid #004d99;
+            padding: 40px;
+            position: relative;
         }
 
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .emblem {
-            font-size: 40px;
+        .header-content {
+            max-width: 800px;
         }
 
         .header h1 {
-            font-size: 1.8em;
-            margin-bottom: 5px;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .header p {
-            opacity: 0.9;
+            opacity: 0.95;
+            font-size: 15px;
+        }
+
+        .nav-bar {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breadcrumb {
+            color: #666;
             font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #1e3c72;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-home {
+            background: #1e3c72;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:hover {
+            background: #2a5298;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(30, 60, 114, 0.3);
         }
 
         .content {
@@ -67,33 +98,41 @@
 
         .info-banner {
             background: #e8f4fd;
-            border-left: 4px solid #0066cc;
-            padding: 15px 20px;
+            border-left: 4px solid #1e3c72;
+            padding: 16px 20px;
             margin-bottom: 30px;
             border-radius: 4px;
         }
 
         .info-banner strong {
-            color: #004d99;
+            color: #1e3c72;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info-banner p {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .section {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
         .section-title {
             font-size: 18px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 2px solid #e0e0e0;
         }
 
         .upload-area {
-            border: 2px dashed #0066cc;
+            border: 2px dashed #1e3c72;
             border-radius: 8px;
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
@@ -102,26 +141,33 @@
 
         .upload-area:hover {
             background: #e8f4fd;
-            border-color: #004d99;
+            border-color: #2a5298;
         }
 
         .upload-area input[type="file"] {
             display: none;
         }
 
-        .upload-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #0066cc;
+        .upload-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 13px;
+            color: #666;
         }
 
         .preview-image {
             max-width: 100%;
-            max-height: 300px;
-            margin: 20px 0;
+            max-height: 350px;
+            margin: 25px 0;
             border-radius: 8px;
             border: 1px solid #e0e0e0;
             display: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .form-group {
@@ -138,24 +184,24 @@
 
         .form-group input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px 16px;
             border: 1px solid #d0d0d0;
-            border-radius: 4px;
+            border-radius: 6px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
         }
 
         .btn {
-            padding: 14px 30px;
+            padding: 14px 32px;
             border: none;
-            border-radius: 4px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -163,12 +209,14 @@
         }
 
         .btn-primary {
-            background: #0066cc;
+            background: #1e3c72;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #0052a3;
+            background: #2a5298;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
         }
 
         .btn-primary:active {
@@ -177,9 +225,11 @@
 
         .divider {
             text-align: center;
-            margin: 30px 0;
+            margin: 35px 0;
             color: #999;
             position: relative;
+            font-size: 14px;
+            font-weight: 500;
         }
 
         .divider::before,
@@ -201,9 +251,9 @@
         }
 
         .result {
-            margin-top: 20px;
+            margin-top: 25px;
             padding: 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             display: none;
         }
 
@@ -227,66 +277,62 @@
 
         .result-title {
             font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 10px;
+            font-size: 17px;
+            margin-bottom: 12px;
         }
 
         .result-details {
             margin-top: 15px;
-            background: rgba(255, 255, 255, 0.5);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 16px;
             border-radius: 4px;
         }
 
         .result-details div {
-            margin: 8px 0;
+            margin: 10px 0;
             font-size: 14px;
         }
 
         .confidence-bar {
             width: 100%;
-            height: 8px;
+            height: 10px;
             background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
+            border-radius: 5px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 12px;
         }
 
         .confidence-fill {
             height: 100%;
-            background: #28a745;
+            background: linear-gradient(90deg, #28a745 0%, #20c997 100%);
             transition: width 0.5s;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: 500;
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #856404;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
+        .note strong {
+            color: #664d03;
         }
 
         .footer {
-            background: #f5f7fa;
-            padding: 20px 40px;
+            background: #f8f9fa;
+            padding: 25px 40px;
             text-align: center;
             color: #666;
             font-size: 13px;
             border-top: 1px solid #e0e0e0;
         }
 
-        .note {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            padding: 12px 15px;
-            border-radius: 4px;
-            margin-top: 15px;
-            font-size: 13px;
-            color: #856404;
+        .footer p {
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -294,38 +340,43 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-top">
-                <div class="logo">🆔 UIDAI</div>
-                <div class="emblem">🇮🇳</div>
+            <div class="header-content">
+                <h1>Aadhar Card Verification System</h1>
+                <p>Unique Identification Authority of India (UIDAI)</p>
             </div>
-            <h1>Aadhar Card Verification System</h1>
-            <p>Unique Identification Authority of India</p>
+        </div>
+
+        <div class="nav-bar">
+            <div class="breadcrumb">
+                <a href="/">Home</a> / Aadhar Verification
+            </div>
+            <a href="/" class="btn-home">Back to Home</a>
         </div>
 
         <div class="content">
             <div class="info-banner">
-                <strong>📋 Verification Process:</strong> This system uses OCR technology and Verhoeff checksum
-                algorithm to validate Aadhar cards. All processing is secure and no data is stored.
+                <strong>Verification Process</strong>
+                <p>This system uses OCR technology and Verhoeff checksum algorithm to validate Aadhar cards. All
+                    processing is secure and no data is stored on our servers.</p>
             </div>
 
             <!-- Image Upload Section -->
             <div class="section">
-                <div class="section-title">📸 Verify by Image Upload</div>
+                <div class="section-title">Verify by Image Upload</div>
                 <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                    <div class="upload-icon">📤</div>
-                    <p style="font-weight: 600; margin-bottom: 5px;">Click to upload Aadhar card image</p>
-                    <p style="font-size: 14px; color: #666;">Supports: JPG, PNG, JPEG (Max 16MB)</p>
+                    <div class="upload-text">Click to upload Aadhar card image</div>
+                    <div class="upload-hint">Supports: JPG, PNG, JPEG (Maximum 16MB)</div>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
                 </div>
                 <img id="previewImage" class="preview-image" alt="Preview">
 
-                <button class="btn btn-primary" onclick="verifyAadhar()" style="margin-top: 15px;">
-                    🔍 Verify Aadhar Card
+                <button class="btn btn-primary" onclick="verifyAadhar()" style="margin-top: 20px;">
+                    Verify Aadhar Card
                 </button>
 
                 <div class="note">
                     <strong>Note:</strong> Image verification requires Google Cloud Vision API credentials to be
-                    configured.
+                    configured. Ensure credentials are properly set up before using this feature.
                 </div>
             </div>
 
@@ -333,25 +384,22 @@
 
             <!-- Number Input Section -->
             <div class="section">
-                <div class="section-title">🔢 Verify by Aadhar Number</div>
+                <div class="section-title">Verify by Aadhar Number</div>
                 <div class="form-group">
                     <label for="aadharNumber">Enter 12-digit Aadhar Number</label>
                     <input type="text" id="aadharNumber" placeholder="XXXX XXXX XXXX" maxlength="14">
                 </div>
                 <button class="btn btn-primary" onclick="verifyAadharNumber()">
-                    ✓ Verify Number
+                    Verify Number
                 </button>
             </div>
 
             <div id="result" class="result"></div>
-
-            <a href="/" class="back-link">← Back to Home</a>
         </div>
 
         <div class="footer">
-            <p>© 2024 Aadhar Verification System | For authorized use only</p>
-            <p style="margin-top: 5px; font-size: 12px;">This is an unofficial verification tool using public algorithms
-            </p>
+            <p>&copy; 2024 Aadhar Verification System | For authorized use only</p>
+            <p>This is an unofficial verification tool using public algorithms</p>
         </div>
     </div>
 
@@ -390,19 +438,19 @@
                 .then(result => {
                     if (result.valid) {
                         const details = `
-                        <div class="result-title">✓ Valid Aadhar Card!</div>
+                        <div class="result-title">Valid Aadhar Card</div>
                         <div class="result-details">
                             <div><strong>Aadhar Number:</strong> ${result.number}</div>
                             <div><strong>Confidence Score:</strong> ${result.confidence}%</div>
                             <div class="confidence-bar">
                                 <div class="confidence-fill" style="width: ${result.confidence}%"></div>
                             </div>
-                            <div style="margin-top: 10px;"><em>${result.message}</em></div>
+                            <div style="margin-top: 12px;"><em>${result.message}</em></div>
                         </div>
                     `;
                         showResult(details, 'success', true);
                     } else {
-                        showResult(`✗ ${result.message || 'Invalid or unreadable Aadhar card'}`, 'error');
+                        showResult(`${result.message || 'Invalid or unreadable Aadhar card'}`, 'error');
                     }
                 })
                 .catch(error => {
@@ -431,19 +479,19 @@
                 .then(result => {
                     if (result.valid) {
                         const details = `
-                        <div class="result-title">✓ Valid Aadhar Number!</div>
+                        <div class="result-title">Valid Aadhar Number</div>
                         <div class="result-details">
                             <div><strong>Formatted Number:</strong> ${result.number}</div>
                             <div><strong>Confidence Score:</strong> ${result.confidence}%</div>
                             <div class="confidence-bar">
                                 <div class="confidence-fill" style="width: ${result.confidence}%"></div>
                             </div>
-                            <div style="margin-top: 10px;"><em>${result.message}</em></div>
+                            <div style="margin-top: 12px;"><em>${result.message}</em></div>
                         </div>
                     `;
                         showResult(details, 'success', true);
                     } else {
-                        showResult(`✗ ${result.message || 'Invalid Aadhar number format'}`, 'error');
+                        showResult(`${result.message || 'Invalid Aadhar number format'}`, 'error');
                     }
                 })
                 .catch(error => {

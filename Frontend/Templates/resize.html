@@ -14,17 +14,17 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f0f2f5;
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -32,17 +32,17 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 40px;
-            text-align: center;
         }
 
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
         .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
+            font-size: 15px;
+            opacity: 0.95;
         }
 
         .content {
@@ -258,17 +258,46 @@
             border-left: 4px solid #667eea;
         }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 30px;
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 16px;
+        .nav-bar {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .back-link:hover {
+        .breadcrumb {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
             text-decoration: underline;
+        }
+
+        .btn-home {
+            background: #667eea;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-home:hover {
+            background: #764ba2;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
         }
 
         .crop-container {
@@ -301,23 +330,30 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🖼️ Image Processing Tools</h1>
-            <p>Resize, Crop, Compress & Convert your images - All in one place</p>
+            <h1>Image Processing Tools</h1>
+            <p>Resize, Crop, Compress & Convert your images</p>
+        </div>
+
+        <div class="nav-bar">
+            <div class="breadcrumb">
+                <a href="/">Home</a> / Image Tools
+            </div>
+            <a href="/" class="btn-home">Back to Home</a>
         </div>
 
         <div class="content">
             <div class="tabs">
-                <button class="tab active" onclick="switchTab('resize')">📐 Resize</button>
-                <button class="tab" onclick="switchTab('crop')">✂️ Crop</button>
-                <button class="tab" onclick="switchTab('compress')">🗜️ Compress</button>
-                <button class="tab" onclick="switchTab('convert')">🔄 Convert</button>
+                <button class="tab active" onclick="switchTab('resize')">Resize</button>
+                <button class="tab" onclick="switchTab('crop')">Crop</button>
+                <button class="tab" onclick="switchTab('compress')">Compress</button>
+                <button class="tab" onclick="switchTab('convert')">Convert</button>
             </div>
 
             <!-- Upload Area (shared) -->
             <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-icon">📤</div>
-                <h2>Click or drag to upload image</h2>
-                <p style="margin-top: 10px; color: #666;">Supports: JPG, PNG, JPEG, WEBP (Max 16MB)</p>
+                <div style="font-size: 18px; font-weight: 500; color: #333; margin-bottom: 8px;">Click or drag to upload
+                    image</div>
+                <div style="font-size: 14px; color: #666;">Supports: JPG, PNG, JPEG, WEBP (Max 16MB)</div>
                 <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
             </div>
 
@@ -355,7 +391,7 @@
             <!-- Resize Tab -->
             <div id="resize-tab" class="tab-content active">
                 <div class="info-box">
-                    <strong>📐 Resize Options:</strong>
+                    <strong>Resize Options</strong>
                     <ul style="margin-top: 10px; margin-left: 20px;">
                         <li>Enter width - height auto-calculates (maintains aspect ratio)</li>
                         <li>Enter height - width auto-calculates (maintains aspect ratio)</li>
@@ -388,14 +424,14 @@
                     <input type="number" id="resizePercent" placeholder="e.g., 50" min="1" max="500">
                 </div>
 
-                <button class="btn btn-primary" onclick="processResize()">📐 Resize & Download</button>
+                <button class="btn btn-primary" onclick="processResize()">Resize & Download</button>
                 <div id="resizeResult" class="result"></div>
             </div>
 
             <!-- Crop Tab -->
             <div id="crop-tab" class="tab-content">
                 <div class="info-box">
-                    <strong>✂️ Crop Options:</strong>
+                    <strong>Crop Options</strong>
                     <p style="margin-top: 10px;">Select a preset aspect ratio or enter custom dimensions</p>
                 </div>
 
@@ -426,14 +462,14 @@
                     <canvas id="cropCanvas"></canvas>
                 </div>
 
-                <button class="btn btn-primary" onclick="processCrop()">✂️ Crop & Download</button>
+                <button class="btn btn-primary" onclick="processCrop()">Crop & Download</button>
                 <div id="cropResult" class="result"></div>
             </div>
 
             <!-- Compress Tab -->
             <div id="compress-tab" class="tab-content">
                 <div class="info-box">
-                    <strong>🗜️ Compression:</strong>
+                    <strong>Compression</strong>
                     <p style="margin-top: 10px;">Reduce file size while maintaining quality. Lower quality = smaller
                         file size.</p>
                 </div>
@@ -455,14 +491,14 @@
                     </select>
                 </div>
 
-                <button class="btn btn-primary" onclick="processCompress()">🗜️ Compress & Download</button>
+                <button class="btn btn-primary" onclick="processCompress()">Compress & Download</button>
                 <div id="compressResult" class="result"></div>
             </div>
 
             <!-- Convert Tab -->
             <div id="convert-tab" class="tab-content">
                 <div class="info-box">
-                    <strong>🔄 Format Conversion:</strong>
+                    <strong>Format Conversion</strong>
                     <p style="margin-top: 10px;">Convert your image to different formats</p>
                 </div>
 
@@ -481,11 +517,9 @@
                         oninput="document.getElementById('convertQualityValue').textContent = this.value">
                 </div>
 
-                <button class="btn btn-primary" onclick="processConvert()">🔄 Convert & Download</button>
+                <button class="btn btn-primary" onclick="processConvert()">Convert & Download</button>
                 <div id="convertResult" class="result"></div>
             </div>
-
-            <a href="/" class="back-link">← Back to Home</a>
         </div>
     </div>
 
