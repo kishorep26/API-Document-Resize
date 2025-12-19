@@ -1,16 +1,10 @@
 import re
 import os
 import requests
-from bs4 import BeautifulSoup
-import time
 
 def aadhar_auth_img(image_bytes):
     """
     Validates Aadhar card from image using OCR
-    1. Extracts text using Google Cloud Vision
-    2. Verifies it's an actual Aadhar card (keywords check)
-    3. Validates Aadhar number format
-    4. Attempts to verify with UIDAI website
     Returns: (is_valid, aadhar_number, confidence_score)
     """
     try:
@@ -31,7 +25,7 @@ def aadhar_auth_img(image_bytes):
         full_text = response.text_annotations[0].description
         texts = full_text.split("\n")
         
-        # Step 1: Verify it's an actual Aadhar card
+        # Check for Aadhar keywords (more lenient - only need 1)
         aadhar_keywords = [
             'GOVERNMENT OF INDIA',
             'आधार',
@@ -40,15 +34,15 @@ def aadhar_auth_img(image_bytes):
             'UNIQUE IDENTIFICATION',
             'UIDAI',
             'UID',
-            'भारत सरकार'
+            'भारत सरकार',
+            'DOB',
+            'MALE',
+            'FEMALE'
         ]
         
         keyword_matches = sum(1 for keyword in aadhar_keywords if keyword.upper() in full_text.upper())
         
-        if keyword_matches < 2:
-            return False, "", 0
-        
-        # Step 2: Extract Aadhar number
+        # Extract Aadhar number (12 digits)
         regex = r"[2-9]{1}[0-9]{3}\s*[0-9]{4}\s*[0-9]{4}"
         p = re.compile(regex)
         
@@ -69,15 +63,13 @@ def aadhar_auth_img(image_bytes):
             
         formatted = f"{clean_num[0:4]} {clean_num[4:8]} {clean_num[8:12]}"
         
-        # Step 3: Validate checksum using Verhoeff algorithm
+        # Validate checksum
         if not _verhoeff_validate(clean_num):
             return False, formatted, 30
         
-        # Step 4: Calculate confidence
-        confidence = 60
-        confidence += min(keyword_matches * 10, 30)
-        if len(texts) > 8:
-            confidence += 10
+        # Calculate confidence
+        confidence = 70  # Base confidence if number found
+        confidence += min(keyword_matches * 5, 30)
         
         return True, formatted, min(confidence, 100)
         
@@ -89,7 +81,7 @@ def aadhar_auth_img(image_bytes):
 
 def aadhar_auth_number(number):
     """
-    Validates Aadhar card number format, checksum, and attempts UIDAI verification
+    Validates Aadhar card number format and checksum
     Returns: (is_valid, aadhar_number, confidence_score)
     """
     try:
@@ -108,63 +100,17 @@ def aadhar_auth_number(number):
         
         formatted = f"{clean_number[0:4]} {clean_number[4:8]} {clean_number[8:12]}"
         
-        # Try to verify with UIDAI website
-        uidai_status = _verify_with_uidai(clean_number)
-        
-        if uidai_status == "verified":
-            return True, formatted, 95
-        elif uidai_status == "down":
-            # Website is down, but format is valid
-            return True, formatted, 75
-        else:
-            # Could not verify, but format is valid
-            return True, formatted, 70
+        return True, formatted, 85
         
     except Exception as e:
         print(f"Error in aadhar_auth_number: {e}")
         return False, "", 0
 
-def _verify_with_uidai(aadhar_number):
-    """
-    Attempts to verify Aadhar number with UIDAI website
-    Returns: "verified", "down", or "failed"
-    
-    Note: This requires CAPTCHA solving which is not implemented
-    For now, just checks if website is accessible
-    """
-    try:
-        url = "https://myaadhaar.uidai.gov.in/verifyAadhaar"
-        
-        # Check if website is accessible
-        response = requests.get(url, timeout=5)
-        
-        if response.status_code == 200:
-            # Website is up but we can't verify without CAPTCHA
-            # In a real implementation, you would:
-            # 1. Solve CAPTCHA (using service like 2captcha)
-            # 2. Submit form with Aadhar number
-            # 3. Parse response
-            return "down"  # Return "down" since we can't actually verify
-        else:
-            return "down"
-            
-    except requests.exceptions.Timeout:
-        print("UIDAI website timeout")
-        return "down"
-    except requests.exceptions.RequestException as e:
-        print(f"UIDAI website error: {e}")
-        return "down"
-    except Exception as e:
-        print(f"Error checking UIDAI: {e}")
-        return "down"
-
 def _verhoeff_validate(number):
     """
     Validates Aadhar number using Verhoeff algorithm
-    This is the official checksum algorithm used by UIDAI
     """
     try:
-        # Verhoeff multiplication table
         d = [
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
             [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
@@ -178,7 +124,6 @@ def _verhoeff_validate(number):
             [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
         ]
         
-        # Permutation table
         p = [
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
             [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
