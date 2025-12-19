@@ -7,87 +7,95 @@ def pan_auth_img(image_bytes):
     Returns: (is_valid, pan_number, confidence_score)
     """
     try:
+        # Check for credentials first
+        creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        if not creds_path:
+            creds_path = 'credentials.json'
+        
+        print(f"Looking for credentials at: {creds_path}")
+        
+        if not os.path.exists(creds_path):
+            print(f"WARNING: Google Cloud credentials not found!")
+            print("Returning error - please upload credentials.json or set GOOGLE_APPLICATION_CREDENTIALS")
+            return False, "Please set up Google Cloud Vision API credentials to use image verification", 0
+        
         from google.cloud import vision
         
-        # Check for credentials
-        creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', 'credentials.json')
-        if not creds_path or not os.path.exists(creds_path):
-            print("ERROR: Google Cloud credentials not found!")
-            print("Set GOOGLE_APPLICATION_CREDENTIALS environment variable")
-            return False, "", 0
-        
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = creds_path
+        print("Credentials loaded successfully")
         
         client = vision.ImageAnnotatorClient()
         image = vision.Image(content=image_bytes)
+        
+        print("Calling Google Cloud Vision API...")
         response = client.text_detection(image=image)
         
         if response.error.message:
-            print(f"Google Cloud Vision error: {response.error.message}")
-            return False, "", 0
+            print(f"Google Cloud Vision API error: {response.error.message}")
+            return False, f"API_ERROR: {response.error.message}", 0
         
         if not response.text_annotations:
-            print("No text found in image")
-            return False, "", 0
+            print("No text found in image by OCR")
+            return False, "NO_TEXT_FOUND", 0
             
         full_text = response.text_annotations[0].description
         texts = full_text.split("\n")
         
-        print(f"Extracted text: {full_text[:200]}...")  # Debug
+        print("="*50)
+        print("EXTRACTED TEXT:")
+        print(full_text)
+        print("="*50)
         
-        # Check for PAN keywords (lenient - only need 1)
+        # Check for PAN keywords
         pan_keywords = [
-            'INCOME TAX',
-            'GOVT',
-            'GOVERNMENT',
-            'PERMANENT ACCOUNT NUMBER',
-            'PAN',
-            'आयकर',
-            'भारत',
-            'INDIA',
-            'FATHER',
-            'NAME',
-            'DOB',
-            'SIGNATURE',
-            'DATE OF BIRTH'
+            'INCOME', 'TAX', 'GOVT', 'GOVERNMENT', 'PERMANENT', 'ACCOUNT', 'NUMBER',
+            'PAN', 'INDIA', 'FATHER', 'NAME', 'DOB', 'SIGNATURE', 'DATE', 'BIRTH'
         ]
         
         keyword_matches = sum(1 for keyword in pan_keywords if keyword.upper() in full_text.upper())
-        print(f"Keyword matches: {keyword_matches}")
+        print(f"Keyword matches found: {keyword_matches}")
         
         # Extract PAN number
-        regex = r"[A-Z]{5}[0-9]{4}[A-Z]{1}"
-        p = re.compile(regex)
-        
         pan_number = None
+        regex1 = r"[A-Z]{5}[0-9]{4}[A-Z]{1}"
+        
         for text in texts:
-            text_upper = text.strip().upper().replace(" ", "").replace("-", "").replace(".", "")
-            if len(text_upper) == 10 and re.match(regex, text_upper):
-                pan_number = text_upper
-                print(f"Found PAN: {pan_number}")
+            text_clean = text.strip().upper().replace(" ", "").replace("-", "").replace(".", "").replace("_", "")
+            
+            if len(text_clean) == 10:
+                if re.match(regex1, text_clean):
+                    pan_number = text_clean
+                    print(f"Found PAN (exact match): {pan_number}")
+                    break
+            
+            match = re.search(regex1, text_clean)
+            if match:
+                pan_number = match.group()
+                print(f"Found PAN (regex search): {pan_number}")
                 break
         
         if not pan_number:
-            print("No PAN number found in text")
-            return False, "", 0
+            print("No PAN number pattern found in extracted text")
+            print("Extracted lines:")
+            for i, line in enumerate(texts[:20]):
+                print(f"  Line {i}: '{line}'")
+            return False, "NO_PAN_PATTERN", 0
         
-        # Validate PAN structure
         if not _validate_pan_structure(pan_number):
-            print("PAN structure validation failed")
+            print(f"PAN structure validation failed for: {pan_number}")
             return False, pan_number, 30
         
-        # Calculate confidence
         confidence = 70
-        confidence += min(keyword_matches * 5, 30)
+        confidence += min(keyword_matches * 3, 30)
         
-        print(f"Validation successful! Confidence: {confidence}%")
+        print(f"✓ Validation successful! PAN: {pan_number}, Confidence: {confidence}%")
         return True, pan_number, min(confidence, 100)
         
     except Exception as e:
-        print(f"Error in pan_auth_img: {e}")
+        print(f"EXCEPTION in pan_auth_img: {e}")
         import traceback
         traceback.print_exc()
-        return False, "", 0
+        return False, f"EXCEPTION: {str(e)}", 0
 
 def pan_auth_number(number):
     """
@@ -117,23 +125,29 @@ def _validate_pan_structure(pan):
     """
     try:
         if len(pan) != 10:
+            print(f"  Invalid length: {len(pan)}")
             return False
         
         valid_types = ['P', 'C', 'H', 'F', 'A', 'T', 'B', 'L', 'J', 'G']
         if pan[3] not in valid_types:
+            print(f"  Invalid 4th character: {pan[3]} (must be one of {valid_types})")
             return False
         
         if not pan[:5].isalpha():
+            print(f"  First 5 chars not all letters: {pan[:5]}")
             return False
         
         if not pan[5:9].isdigit():
+            print(f"  Middle 4 chars not all digits: {pan[5:9]}")
             return False
         
         if not pan[9].isalpha():
+            print(f"  Last char not a letter: {pan[9]}")
             return False
         
         return True
-    except:
+    except Exception as e:
+        print(f"  Exception in structure validation: {e}")
         return False
 
 def get_pan_holder_type(pan):

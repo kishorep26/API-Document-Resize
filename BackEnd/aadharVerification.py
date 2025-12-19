@@ -7,101 +7,101 @@ def aadhar_auth_img(image_bytes):
     Returns: (is_valid, aadhar_number, confidence_score)
     """
     try:
+        # Check for credentials first
+        creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+        if not creds_path:
+            creds_path = 'credentials.json'
+        
+        print(f"Looking for credentials at: {creds_path}")
+        
+        if not os.path.exists(creds_path):
+            print(f"WARNING: Google Cloud credentials not found!")
+            print("Returning error - please upload credentials.json or set GOOGLE_APPLICATION_CREDENTIALS")
+            return False, "Please set up Google Cloud Vision API credentials to use image verification", 0
+        
         from google.cloud import vision
         
-        # Check for credentials
-        creds_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS', 'credentials.json')
-        if not creds_path or not os.path.exists(creds_path):
-            print("ERROR: Google Cloud credentials not found!")
-            print("Set GOOGLE_APPLICATION_CREDENTIALS environment variable")
-            return False, "", 0
-        
         os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = creds_path
+        print("Credentials loaded successfully")
         
         client = vision.ImageAnnotatorClient()
         image = vision.Image(content=image_bytes)
+        
+        print("Calling Google Cloud Vision API...")
         response = client.text_detection(image=image)
         
         if response.error.message:
-            print(f"Google Cloud Vision error: {response.error.message}")
-            return False, "", 0
+            print(f"Google Cloud Vision API error: {response.error.message}")
+            return False, f"API_ERROR: {response.error.message}", 0
         
         if not response.text_annotations:
-            print("No text found in image")
-            return False, "", 0
+            print("No text found in image by OCR")
+            return False, "NO_TEXT_FOUND", 0
             
         full_text = response.text_annotations[0].description
         texts = full_text.split("\n")
         
-        print(f"Extracted text: {full_text[:200]}...")  # Debug
+        print("="*50)
+        print("EXTRACTED TEXT:")
+        print(full_text)
+        print("="*50)
         
-        # Check for Aadhar keywords (lenient - only need 1)
+        # Check for Aadhar keywords
         aadhar_keywords = [
-            'GOVERNMENT OF INDIA',
-            'आधार',
-            'AADHAAR', 
-            'AADHAR',
-            'UNIQUE IDENTIFICATION',
-            'UIDAI',
-            'UID',
-            'भारत सरकार',
-            'DOB',
-            'MALE',
-            'FEMALE',
-            'YEAR OF BIRTH',
-            'VID',
-            'INDIA'
+            'GOVERNMENT', 'INDIA', 'AADHAAR', 'AADHAR', 'UNIQUE', 'IDENTIFICATION',
+            'UIDAI', 'UID', 'DOB', 'MALE', 'FEMALE', 'YEAR', 'BIRTH', 'VID'
         ]
         
         keyword_matches = sum(1 for keyword in aadhar_keywords if keyword.upper() in full_text.upper())
-        print(f"Keyword matches: {keyword_matches}")
+        print(f"Keyword matches found: {keyword_matches}")
         
-        # Extract Aadhar number (12 digits)
-        regex = r"[2-9]{1}[0-9]{3}\s*[0-9]{4}\s*[0-9]{4}"
-        p = re.compile(regex)
-        
+        # Extract Aadhar number
         aadhar_number = None
+        
         for text in texts:
-            clean_text = text.replace(" ", "").replace("-", "").replace(".", "")
-            # Check for 12 digit pattern
-            if re.search(p, text):
-                aadhar_number = text.strip()
-                break
-            # Check if it's exactly 12 digits starting with 2-9
-            elif len(clean_text) == 12 and clean_text.isdigit() and clean_text[0] in '23456789':
-                aadhar_number = clean_text
+            clean_text = text.replace(" ", "").replace("-", "").replace(".", "").replace("_", "")
+            
+            if len(clean_text) == 12 and clean_text.isdigit():
+                if clean_text[0] in '23456789':
+                    aadhar_number = clean_text
+                    print(f"Found Aadhar (12 digits): {aadhar_number}")
+                    break
+            
+            regex = r"[2-9]{1}[0-9]{3}\s*[0-9]{4}\s*[0-9]{4}"
+            match = re.search(regex, text)
+            if match:
+                aadhar_number = match.group().replace(" ", "")
+                print(f"Found Aadhar (regex): {aadhar_number}")
                 break
         
         if not aadhar_number:
-            print("No Aadhar number found in text")
-            return False, "", 0
+            print("No Aadhar number pattern found in extracted text")
+            print("Extracted lines:")
+            for i, line in enumerate(texts[:20]):
+                print(f"  Line {i}: '{line}'")
+            return False, "NO_AADHAR_PATTERN", 0
         
-        # Format the number
-        clean_num = aadhar_number.replace(" ", "").replace("-", "").replace(".", "")
-        if len(clean_num) != 12:
-            print(f"Invalid Aadhar length: {len(clean_num)}")
-            return False, "", 0
+        if len(aadhar_number) != 12:
+            print(f"Invalid Aadhar length: {len(aadhar_number)}")
+            return False, aadhar_number, 0
             
-        formatted = f"{clean_num[0:4]} {clean_num[4:8]} {clean_num[8:12]}"
-        print(f"Found Aadhar: {formatted}")
+        formatted = f"{aadhar_number[0:4]} {aadhar_number[4:8]} {aadhar_number[8:12]}"
         
-        # Validate checksum
-        if not _verhoeff_validate(clean_num):
-            print("Verhoeff checksum failed")
+        if not _verhoeff_validate(aadhar_number):
+            print(f"Verhoeff checksum failed for: {formatted}")
             return False, formatted, 30
         
-        # Calculate confidence
         confidence = 70
         confidence += min(keyword_matches * 5, 30)
         
-        print(f"Validation successful! Confidence: {confidence}%")
+        print(f"✓ Validation successful! Aadhar: {formatted}, Confidence: {confidence}%")
         return True, formatted, min(confidence, 100)
         
     except Exception as e:
-        print(f"Error in aadhar_auth_img: {e}")
+        print(f"EXCEPTION in aadhar_auth_img: {e}")
         import traceback
         traceback.print_exc()
-        return False, "", 0
+        return False, f"EXCEPTION: {str(e)}", 0
 
 def aadhar_auth_number(number):
     """
