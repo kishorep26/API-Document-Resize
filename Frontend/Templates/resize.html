@@ -353,14 +353,60 @@
                         const infoDiv = document.getElementById('resizeImageInfo');
                         infoDiv.innerHTML = `
                             <div><strong>Original Dimensions:</strong> ${img.width} × ${img.height} px</div>
+                            <div><strong>Aspect Ratio:</strong> ${(img.width / img.height).toFixed(2)}</div>
                             <div><strong>File Size:</strong> ${(file.size / 1024).toFixed(2)} KB</div>
                         `;
                         infoDiv.style.display = 'block';
+                        
+                        // Store original dimensions for auto-calculation
+                        window.originalWidth = img.width;
+                        window.originalHeight = img.height;
+                        
+                        // Add event listeners for auto-calculation
+                        setupResizeCalculation();
                     };
                     img.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
+        }
+        
+        function setupResizeCalculation() {
+            const widthInput = document.getElementById('resizeWidth');
+            const heightInput = document.getElementById('resizeHeight');
+            const resizeType = document.getElementById('resizeType');
+            
+            // Auto-calculate height when width changes (for MAR mode)
+            widthInput.addEventListener('input', function() {
+                if (resizeType.value === 'MAR' && window.originalWidth && window.originalHeight) {
+                    const newWidth = parseInt(this.value);
+                    if (newWidth > 0) {
+                        const aspectRatio = window.originalHeight / window.originalWidth;
+                        const newHeight = Math.round(newWidth * aspectRatio);
+                        heightInput.value = newHeight;
+                        heightInput.style.backgroundColor = '#f0f0f0';
+                    }
+                }
+            });
+            
+            // Auto-calculate width when height changes (for MAR mode)
+            heightInput.addEventListener('input', function() {
+                if (resizeType.value === 'MAR' && window.originalWidth && window.originalHeight) {
+                    const newHeight = parseInt(this.value);
+                    if (newHeight > 0) {
+                        const aspectRatio = window.originalWidth / window.originalHeight;
+                        const newWidth = Math.round(newHeight * aspectRatio);
+                        widthInput.value = newWidth;
+                        widthInput.style.backgroundColor = '#f0f0f0';
+                    }
+                }
+            });
+            
+            // Reset background when resize type changes
+            resizeType.addEventListener('change', function() {
+                widthInput.style.backgroundColor = '';
+                heightInput.style.backgroundColor = '';
+            });
         }
 
         function handleCompressFileSelect(event) {
