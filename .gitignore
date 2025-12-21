@@ -48,6 +48,7 @@ Thumbs.db
 *.jpeg
 *.jpg
 *.png
+!Frontend/static/favicon.png
 /tmp/
 resized.*
 reduced.*
